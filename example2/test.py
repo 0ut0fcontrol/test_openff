@@ -2,6 +2,7 @@
 # Load a molecule into the OpenFF Molecule object
 from openff.toolkit.topology import Molecule
 molecule = Molecule.from_file('example.mol.ob.sdf')
+# molecule = Molecule.from_file('triazine.sdf')
 
 # Create an OpenFF Topology object from the molecule
 from openff.toolkit.topology import Topology
@@ -18,8 +19,16 @@ openmm_system = forcefield.create_openmm_system(topology)
 import parmed
 
 # Convert OpenMM System to a ParmEd structure.
+omm_top = topology.to_openmm()
+chain = list(omm_top.chains())[0]
+print(chain.id)
+chain.id = "Z"
+print(chain.index)
+chain.index = 999
+res = list(chain.residues())[0]
+res.name = "LIG"
 parmed_structure = parmed.openmm.load_topology(
-    topology.to_openmm(), openmm_system, molecule.conformers[0]
+    omm_top, openmm_system, molecule.conformers[0]
 )
 
 # %%
